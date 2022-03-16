@@ -8,12 +8,12 @@ Given a query image (from MNIST) we perform brute-force search on a vector of co
 
 Some random results:
 
+<p float="left">
 <img src="results/1.png" alt='example1' width="250">
-
 <img src="results/5.png" alt='example1' width="250">
-
+</p>
+<p float="left">
 <img src="results/125.png" alt='example1' width="250">
-
 <img src="results/12125.png" alt='example1' width="250">
-
+</p>
 
