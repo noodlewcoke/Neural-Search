@@ -1,12 +1,13 @@
 import torch
 import torch.nn as nn
-from models import MNIST_classifier
+from models import MNIST_classifier, AutoEncoder
 from torchvision.datasets import MNIST
 import torchvision
 from torch.utils.data import DataLoader
 from pprint import pprint
 import matplotlib.pyplot as plt
 from PIL import Image
+import argparse
 
 class Seeker:
 
@@ -31,7 +32,7 @@ class Seeker:
 
     
 
-def plot(query, results, query_id=0):
+def plot(query, results, save_path, query_id=0):
 
     # Query image
     query_img = Image.fromarray(query.squeeze().numpy(), mode='L')
@@ -63,10 +64,10 @@ def plot(query, results, query_id=0):
         if i//5 +1 == 3 and i%5 ==0:
             axs[i//5 +1 , i%5].set(ylabel='TOP {}'.format(len(results_img)))
         axs[i//5 +1 , i%5].imshow(result_img)
-    plt.savefig('results/{}'.format(query_id))
+    plt.savefig('results/{}/{}'.format(save_path, query_id))
     plt.show()
 
-def main():
+def main(id, save_path):
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     assert device == 'cuda', "CUDA FAILED?"
@@ -85,23 +86,30 @@ def main():
         'bias' : True,
         'lr' : 0
     }
-    model = MNIST_classifier(config)
-    model.load('saves/vanilla')
+    model = AutoEncoder(config)
+    model.load('saves/vanilla_ae')
     model.to(device)
-    img_db = torch.load('embeddings/embeddings.pt')
+    img_db = torch.load('embeddings/ae_embeddings.pt')
 
     search_engine = Seeker(model, img_db, device)
 
-    query_id = 12125
+    query_id = id
     query = mnist_data_train[query_id][0]
+    query = torch.flatten(query)
     q = mnist_data_train.data[query_id]
     results = search_engine(query, top_k=25)
     
     r = [mnist_data_test.data[i[1]] for i in results]
 
     # pprint(results)
-    plot(q, r, query_id=query_id)
+    plot(q, r, save_path, query_id=query_id)
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--id',type=int)
+    parser.add_argument('--save_path',type=str)
+
+    args = parser.parse_args()
+
+    main(args.id, args.save_path)
