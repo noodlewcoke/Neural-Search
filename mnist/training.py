@@ -1,4 +1,3 @@
-from turtle import down
 import numpy as np 
 import torch
 import os, sys
