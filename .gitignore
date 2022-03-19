@@ -1,0 +1,2 @@
+mnist/bi-encoders/data/triplet_ds_train.pt
+mnist/bi-encoders/data/triplet_ds_test.pt
