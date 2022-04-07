@@ -23,7 +23,7 @@ class Seeker:
 
         # Similarity 
         self.similarity = self.similarity_fn(query_embedding, self.database)
-        self.similarity = [(sim, i) for i, sim in enumerate(self.similarity.cpu().detach().numpy())]
+        self.similarity = [(str(sim), str(i)) for i, sim in enumerate(self.similarity.cpu().detach().numpy())]
         self.similarity = sorted(self.similarity, key=lambda x: x[0], reverse=True)
 
         return self.similarity[:top_k]
